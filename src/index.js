@@ -1,17 +1,44 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
+import React, { useState } from 'react';
+import { render } from 'react-dom';
 
-ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
-  document.getElementById('root')
-);
+const Form = () => {
+    let [title, setTitle] = useState("");
+    let [body, setBody] = useState("");
 
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();
+    const sendForm = (ev) => {
+        ev.preventDefalut()
+        fetch('https://jsonplaceholder.typicode.com/posts', {
+            method: 'POST',
+            body: JSON.stringify({
+                title: 'title',
+                body: 'body',
+                userId: 1,
+            }),
+            headers: {
+                'Content-type': 'application/json; charset=UTF-8',
+            },
+        })
+            .then((response) => response.json())
+            .then((json) => console.log(json));
+    }
+
+    return (
+        <form onSubmit={(ev) => sendForm(ev)}>
+            <div>
+                <label htmlFor="title">Titulo{title}</label>
+                <input type="text" id="title" onChange={(ev) => setTitle(ev.target.value)} />
+            </div>
+            <div>
+                <label htmlFor="body">Publicacion {body}</label>
+                <textarea id="body" onChange={(ev) => setBody(ev.target.value)}></textarea>
+            </div>
+            <input type="submit" value="Enviar"></input>
+        </form>
+    )
+}
+
+const Appp = () => {
+    return <div><Form /></div>
+}
+
+render(<Appp />, document.getElementById('react-app'))
